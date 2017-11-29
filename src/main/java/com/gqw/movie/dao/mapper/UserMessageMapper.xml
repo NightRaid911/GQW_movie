@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqw.movie.dao.UserMessageDao">
+    <insert id="addUserMsg" keyProperty="id" parameterType="UserMessage" useGeneratedKeys="true">
+        INSERT INTO USER_MESSAGE(USER_ID,MESSAGE,CREATED_DATE,STATUS_MSG,MOVIE_ID)
+        VALUES(#{user.id},#{message},now(),#{status_msg},#{movie.id})
+    </insert>
+
+    <resultMap id="UserMsgMap" type="UserMessage">
+        <id property="id" column="ID"/>
+        <!--    <result property="user_id" column="USER_ID"/>-->
+        <result property="message" column="MESSAGE"/>
+        <result property="created_date" column="CREATED_DATE"/>
+        <result property="status_msg" column="STATUS_MSG"/>
+        <association property="movie" javaType="Movie">
+             <result property="id" column="ID"/>
+            <result property="movie_name" column="MOVIE_NAME"/>
+        </association>
+        <association property="user" javaType="User">
+            <result property="id" column="ID"/>
+            <result property="name" column="NAME"/>
+            <result property="avatar" column="AVATAR"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserMsg" parameterType="Movie" resultMap="UserMsgMap">
+        SELECT M.ID,M.USER_ID,M.MESSAGE,M.CREATED_DATE,M.STATUS_MSG,M.MOVIE_ID,V.MOVIE_NAME,U.NAME,U.AVATAR
+        FROM (USER_MESSAGE M INNER JOIN USER U ON M.USER_ID=U.ID)
+        INNER JOIN movie V ON M.MOVIE_ID=V.ID
+        <where>
+            <if test="id!=null">MOVIE_ID=#{id}</if>
+        </where>
+    </select>
+
+</mapper>

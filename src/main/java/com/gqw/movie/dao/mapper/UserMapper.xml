@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqw.movie.dao.UserDao">
+    <insert id="addUser" parameterType="User" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO USER(NAME,PASSWORD,EMAIL,HIRE_DATE,AVATAR)
+        VALUES(#{name},#{password},#{email},now(),#{avatar})
+    </insert>
+    <resultMap id="userMap" type="User">
+        <id property="id" column="ID"/>
+        <result property="name" column="NAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="email" column="EMAIL"/>
+        <result property="hireDate" column="HIRE_DATE"/>
+        <result property="avatar" column="AVATAR"/>
+    </resultMap>
+    <select id="getUserByUserEmail" parameterType="User" resultMap="userMap">
+        SELECT ID,NAME,PASSWORD,EMAIL,HIRE_DATE,STATUS,AVATAR FROM USER
+        <where>
+            <if test="1==1">1=1</if>
+            <!--<if test="id!=null">AND ID=#{id}</if>-->
+            <if test="email!=null">AND EMAIL=#{email}</if>
+        </where>
+    </select>
+
+
+    <select id="getUserAll" resultMap="userMap">
+        SELECT ID,NAME,PASSWORD,EMAIL,HIRE_DATE,STATUS,AVATAR FROM USER
+    </select>
+
+    <update id="updateUserByUserId" parameterType="Integer">
+        UPDATE USER SET STATUS=1 WHERE ID=#{ID}
+    </update>
+
+    <update id="updateUserAvatar" parameterType="User">
+        UPDATE USER SET AVATAR=#{avatar} WHERE ID=#{id}
+    </update>
+</mapper>

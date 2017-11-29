@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gqw.movie.dao.MovieDao">
+    <insert id="addMovie" parameterType="Movie" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO MOVIE(MOVIE_NAME,PHOTO,COUNTRY,CATEGORY,RELEASE_DATE,DIRECTOR,ACTORS,AGE,LOVE,DOWNLOADS,STARS_RATING,MOVIE_URL,MOVIE_TIME,MOVIE_IDT)
+        VALUES(#{movie_name},#{photo},#{country},#{category},#{release_date},#{director},#{actors},#{age},#{love},#{downloads},#{stars_rating},#{movie_url},#{movie_time},#{movie_idt});
+    </insert>
+
+    <resultMap id="movieMap" type="Movie">
+        <id property="id" column="ID"/>
+        <result property="movie_name" column="MOVIE_NAME"/>
+        <result property="photo" column="PHOTO"/>
+        <result property="country" column="COUNTRY"/>
+        <result property="category" column="CATEGORY"/>
+        <result property="release_date" column="RELEASE_DATE"/>
+        <result property="director" column="DIRECTOR"/>
+        <result property="actors" column="ACTORS"/>
+        <result property="age" column="AGE"/>
+        <result property="love" column="LOVE"/>
+        <result property="downloads" column="DOWNLOADS"/>
+        <result property="stars_rating" column="STARS_RATING"/>
+        <result property="movie_time" column="MOVIE_TIME"/>
+        <result property="movie_idt" column="MOVIE_IDT"/>
+    </resultMap>
+
+    <select id="getMovieAllByNCC" parameterType="Movie" resultMap="movieMap">
+        SELECT * FROM MOVIE
+        <where>
+            <if test="id==null">1=1</if>
+            <if test="movie_name!=null">AND MOVIE_NAME LIKE CONCAT('%', #{movie_name},'%')</if>
+            <if test="category!=null">AND CATEGORY LIKE CONCAT('%', #{category},'%')</if>
+            <if test="country!=null">AND COUNTRY LIKE CONCAT('%', #{country},'%')</if>
+        </where>
+    </select>
+
+    <select id="getMovieById" parameterType="Movie" resultMap="movieMap">
+        SELECT * FROM MOVIE WHERE ID=#{id}
+    </select>
+
+    <update id="updateMovieLoveOrDownloadById" parameterType="Movie">
+        UPDATE MOVIE
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="love!=null">LOVE =#{love},</if>
+            <if test="downloads!=null">DOWNLOADS =#{downloads},</if>
+        </trim>
+        SET ID=#{id}
+        WHERE ID=#{id}
+    </update>
+
+    <delete id="deleteMovieById" parameterType="Movie" >
+        DELETE FROM MOVIE WHERE ID=#{id}
+    </delete>
+
+</mapper>
